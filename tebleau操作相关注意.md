@@ -22,7 +22,7 @@ F7展示故事，像ppt一样
 
 在一个表上体现多个图形
 
-![image-20221026102058897](E:\Typora\ty_Photo\image-20221026102058897.png)
+![image-20221026102058897](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221026102058897.png)
 
 
 
@@ -30,7 +30,7 @@ F7展示故事，像ppt一样
 
   设置标题，标题要居中
 
-  ![image-20221026102150329](E:\Typora\ty_Photo\image-20221026102150329.png)
+  ![image-20221026102150329](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221026102150329.png)
 
 - 大数据可视化的四个原则：
 
@@ -50,7 +50,7 @@ F7展示故事，像ppt一样
 
 - 首先给城市设置地理角色
 
-![image-20221026102447775](E:\Typora\ty_Photo\image-20221026102447775.png)
+![image-20221026102447775](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221026102447775.png)
 
 可以直接右击属性，查看操作
 

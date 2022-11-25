@@ -95,4 +95,4 @@ print(type(file))
 
 **不要用pandas的read_csv()**
 
-![image-20221026083419984](E:\Typora\ty_Photo\image-20221026083419984.png)
+![image-20221026083419984](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221026083419984.png)

@@ -1,10 +1,10 @@
 ### 字符错题(简直离谱)
 
-![image-20220929093813070](E:\Typora\ty_Photo\image-20220929093813070.png)
+![image-20220929093813070](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20220929093813070.png)
 
-![image-20220929093831682](E:\Typora\ty_Photo\image-20220929093831682.png)
+![image-20220929093831682](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20220929093831682.png)
 
-![image-20220929093848341](E:\Typora\ty_Photo\image-20220929093848341.png)
+![image-20220929093848341](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20220929093848341.png)
 
 
 
@@ -22,17 +22,17 @@ switch(常量表达式){
 
 - 常量**表达式**: **一般填入单个变量**, 但**也可以填入多个变量**, 前提是多个变量组成的表达式同样可被计算出具体值
 
-![image-20220929144903302](E:\Typora\ty_Photo\image-20220929144903302.png)
+![image-20220929144903302](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20220929144903302.png)
 
 - case中的常量: 一般填入单个常量, 且**case中的常量值不能相等**, 但也可以是多个常量组合而成的计算式
 
-![image-20220929145134542](E:\Typora\ty_Photo\image-20220929145134542.png)
+![image-20220929145134542](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20220929145134542.png)
 
 ​	但是一定不能含有变量的计算，即使该变量在前面已经赋值了
 
-![image-20221013135251406](E:\Typora\ty_Photo\image-20221013135251406.png)
+![image-20221013135251406](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221013135251406.png)
 
-![image-20221013135305935](E:\Typora\ty_Photo\image-20221013135305935.png)
+![image-20221013135305935](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221013135305935.png)
 
 ```txt
 the value of 'n' is not usable in a constant expression
@@ -45,7 +45,7 @@ the value of 'n' is not usable in a constant expression
 
 ### if-else嵌套中的两两对应关系
 
-![image-20221013135810796](E:\Typora\ty_Photo\image-20221013135810796.png)
+![image-20221013135810796](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221013135810796.png)
 
 在这里会不会认为else对应的是第一个if, 因为c语言中规定一条当if下只有一条语句的时候可以不加大括号, 而此时第一个if下正好是一条复合if语句, 在逻辑上也认为是一条语句
 
@@ -55,7 +55,7 @@ the value of 'n' is not usable in a constant expression
 
 现在格式化语句:
 
-![image-20221013140101065](E:\Typora\ty_Photo\image-20221013140101065.png)
+![image-20221013140101065](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221013140101065.png)
 
 正确的格式应该是这样的
 
@@ -67,7 +67,7 @@ the value of 'n' is not usable in a constant expression
 
 所以如果想让else与第一个if对应应该写为如下形式:
 
-![image-20221013140251726](E:\Typora\ty_Photo\image-20221013140251726.png)
+![image-20221013140251726](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221013140251726.png)
 
 此时大括号为第一个if明确了作用范围, 所以else只能与第一个if对应
 

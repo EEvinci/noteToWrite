@@ -2,21 +2,21 @@
 
 ## 效果演示
 
-![image-20221115105458361](E:\Typora\ty_Photo\image-20221115105458361.png)
+![image-20221115105458361](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115105458361.png)
 
 ## 配置步骤
 
 ### 在teminal中添加新配置面板
 
-**![image-20221115105551123](E:\Typora\ty_Photo\image-20221115105551123.png)**
+**![image-20221115105551123](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115105551123.png)**
 
 ### 添加新配置文件
 
-![image-20221115105608363](E:\Typora\ty_Photo\image-20221115105608363.png)
+![image-20221115105608363](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115105608363.png)
 
 ### 修改名字，更换图标
 
-![image-20221115110704043](E:\Typora\ty_Photo\image-20221115110704043.png)
+![image-20221115110704043](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115110704043.png)
 
 
 
@@ -24,9 +24,9 @@
 
 一定要先保存，JSON文件中才会显示这个终端的配置信息
 
-![image-20221115110354574](E:\Typora\ty_Photo\image-20221115110354574.png)
+![image-20221115110354574](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115110354574.png)
 
-![image-20221115111006225](E:\Typora\ty_Photo\image-20221115111006225.png)
+![image-20221115111006225](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115111006225.png)
 
 可以直接通过修改Json文件来修改终端页面的各方面配置
 
@@ -55,7 +55,7 @@
 
 直接根据上面的配置信息修改Tencent-Linux的配置
 
-![image-20221115111533960](E:\Typora\ty_Photo\image-20221115111533960.png)
+![image-20221115111533960](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115111533960.png)
 
 ### 配置.ssh目录中的config文件
 
@@ -75,7 +75,7 @@ User          登录服务器的用户名
 
 保存配置, 然后就可以在teminal中输入密码登录服务器了
 
-![image-20221115112414773](E:\Typora\ty_Photo\image-20221115112414773.png)
+![image-20221115112414773](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115112414773.png)
 
 登录有两种方式, 一种是通过密钥登录, 另一种是通过密码登录
 
@@ -83,7 +83,7 @@ User          登录服务器的用户名
 
 如果是密码登录就是开头的展示界面, 要自己输入密码才能够登录
 
-![image-20221115112748156](E:\Typora\ty_Photo\image-20221115112748156.png)
+![image-20221115112748156](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221115112748156.png)
 
 配置好之后保存
 

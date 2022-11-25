@@ -20,7 +20,7 @@ mnist = tf.keras.datasets.mnist
 
 keras中有七种类型的数据集
 
-![image-20221107140056106](E:\Typora\ty_Photo\image-20221107140056106.png)
+![image-20221107140056106](http://evinci.oss-cn-hangzhou.aliyuncs.com/evinci/image-20221107140056106.png)
 
 | 数据集名称     | 数据集描述               |
 | -------------- | ------------------------ |
