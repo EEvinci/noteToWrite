@@ -14,8 +14,6 @@ WPS
 
 
 
-
-
 ## 算力/GPU/CPU -> thinking-record
 
 台式机太卡 -> GPU/CPU不行, 内存小 -> 与算力有关吗
@@ -24,3 +22,14 @@ WPS
 
 
 
+## Anaconda-python versions management tool
+
+anaconda是一款很好用的python环境管理工具，现在我用的也比较熟练了，但是无疑他是一款体量较大的软件，而且很难在一个新环境上很快的用上，简而言之不够轻量化和便捷化。
+
+python自带的virtualenv能在一定程度上弥补这个问题。还没有深入研究，还不知道好不好用，估计是会有一定的问题的
+
+所以找到一款很简易轻量的python环境管理工具还是很重要的，对于临时办公环境来说
+
+https://github.com/pyenv-win/pyenv-win
+
+这个是一个GitHub上的仓库，现在的重心是把git命令行学习掌握一下，所以这个回来有时候再填坑，顺便再了解使用以下python自带的virtualenv库，对比一下效果
