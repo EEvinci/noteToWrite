@@ -2,23 +2,11 @@
 
 [TOC]
 
-
-
 # Q-Learning简介
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/thumbnail.jpg" alt="Unit 2 thumbnail" width="100%">
 
-
-In the first unit of this class, we learned about Reinforcement Learning (RL), the RL process, and the different methods to solve an RL problem. We also **trained our first agents and uploaded them to the Hugging Face Hub.**
-
-In this unit, we're going to **dive deeper into one of the Reinforcement Learning methods: value-based methods** and study our first RL algorithm: **Q-Learning.**
-
-We'll also **implement our first RL agent from scratch**, a Q-Learning agent, and will train it in two environments:
-
-1. Frozen-Lake-v1 (non-slippery version): where our agent will need to **go from the starting state (S) to the goal state (G)** by walking only on frozen tiles (F) and avoiding holes (H).
-2. An autonomous taxi: where our agent will need **to learn to navigate** a city to **transport its passengers from point A to point B.**
-
-在本课程的第一单元中，我们了解了强化学习 (RL)、RL 过程以及解决 RL 问题的不同方法。 我们还**训练了我们的第一批代理并将它们上传到 Hugging Face Hub。**
+在本课程的第一单元中，我们了解了强化学习 (RL)、RL 过程以及解决 RL 问题的不同方法。 我们还**训练了我们的第一批智能体并将它们上传到 Hugging Face Hub。**
 
 在本单元中，我们将**深入研究其中一种强化学习方法：基于价值的方法**并研究我们的第一个 RL 算法：**Q-Learning。**
 
@@ -27,20 +15,7 @@ We'll also **implement our first RL agent from scratch**, a Q-Learning agent, an
 1. Frozen-Lake-v1（防滑版本）：我们的智能体需要**从起始状态（S）到目标状态（G）**，只在冻结的瓷砖（F）上行走并避免孔 (H)。
 2. 自动驾驶出租车：我们的智能体需要**学习导航**城市以**将乘客从 A 点运送到 B 点。**
 
-
-<img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/envs.gif" alt="Environments"/>
-
-Concretely, we will:
-
-- Learn about **value-based methods**.
-- Learn about the **differences between Monte Carlo and Temporal Difference Learning**.
-- Study and implement **our first RL algorithm**: Q-Learning.
-
-This unit is **fundamental if you want to be able to work on Deep Q-Learning**: the first Deep RL algorithm that played Atari games and beat the human level on some of them (breakout, space invaders, etc).
-
-So let's get started! 🚀
-
-具体来说，我们将：
+<img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/envs.gif" alt="Environments"/>具体来说，我们将：
 
 - 了解**基于价值的方法**。
 - 了解**蒙特卡洛和时间差异学习之间的差异**。
@@ -52,53 +27,33 @@ So let's get started! 🚀
 
 # 【简短回顾】什么是强化学习？ 
 
-In RL, we build an agent that can ***\*****make smart decisions*****\***. For instance, an agent that ***\*****learns to play a video game.*****\*** Or a trading agent that ***\*****learns to maximize its benefits*****\*** by deciding on ***\*****what stocks to buy and when to sell.*****\***
-
-在 RL 中，我们构建了一个可以 ***\***** 做出明智决策*****\*** 的代理。 例如，***\***** 学习玩视频游戏的代理人。*****\*** 或 ***\***** 学习最大化其利益的交易代理人 *****\*** 通过决定 ***\***** 买入什么股票以及何时卖出。*****\***
+在 RL 中，我们构建了一个可以**做出明智选择的智能体**。 例如，**学习玩电子游戏**的智能体。或**学习最大化其利益**的交易智能体通过决定**买入什么股票以及何时卖出**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/rl-process.jpg" alt="RL process"/>
 
+但是，为了做出明智的决定，我们的智能体将通过**通过反复试验与它交互**并获得奖励（正面或负面）来从环境中学习**作为独特的反馈**。
 
+它的目标是**最大化其预期的累积奖励**（由于奖励假设）。
 
-
-
-But, to make intelligent decisions, our agent will learn from the environment by ***\*****interacting with it through trial and error*****\*** and receiving rewards (positive or negative) ***\*****as unique feedback.*****\***
-
-
-
-Its goal ***\*****is to maximize its expected cumulative reward*****\*** (because of the reward hypothesis).
-
-
-
-***\*****The agent's decision-making process is called the policy π:*****\*** given a state, a policy will output an action or a probability distribution over actions. That is, given an observation of the environment, a policy will provide an action (or multiple probabilities for each action) that the agent should take.
-
-
+**agent的决策过程称为policy π: 给定一个状态**，一个policy会输出一个动作或者一个动作的概率分布。 也就是说，给定对环境的观察，策略将提供智能体应该采取的操作（或每个操作的多个概率）。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/policy.jpg" alt="Policy"/>
 
+我们的目标是找到最优策略 π，也就是导致最佳预期累积奖励的策略。
 
+为了找到这个最优策略（从而解决 RL 问题），有**两种主要类型的 RL 方法**：
 
-*****Our goal is to find an optimal policy π**** **, aka., a policy that leads to the best expected cumulative reward.
+- 基于策略的方法：**直接训练策略**以了解在给定状态下采取的操作。
 
-
-
-And to find this optimal policy (hence solving the RL problem), there ***\*****are two main types of RL methods*****\***:
-
-
-
-\- ****Policy-based methods****: ***\*****Train the policy directly*****\*** to learn which action to take given a state.
-
-\- ****Value-based methods****: ***\*****Train a value function*****\*** to learn ***\*****which state is more valuable*****\*** and use this value function ***\*****to take the action that leads to it.*****\***
-
-
+- 基于价值的方法：**训练一个价值函数**学习**哪个状态 更有价值**并使用此价值函数**采取导致它的行动**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/two-approaches.jpg" alt="Two RL approaches"/>
 
-And in this unit, ***\*****we'll dive deeper into the value-based methods.*****\***
+在本单元中，**我们将深入探讨基于价值的方法。**
 
-# Two types of value-based methods [[two-types-value-based-methods]]
+# 两种基于价值的方法
 
-In value-based methods, **we learn a value function** that **maps a state to the expected value of being at that state.**
+在基于价值的方法中，**我们学习一个价值函数**，它**将状态映射到处于该状态的期望值。**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/vbm-1.jpg" alt="Value Based Methods"/>
 
@@ -114,6 +69,20 @@ To find the optimal policy, we learned about two different methods:
 
 - *Policy-based methods:* **Directly train the policy** to select what action to take given a state (or a probability distribution over actions at that state). In this case, we **don't have a value function.**
 
+
+
+一个状态的值是智能体可以得到的**预期折扣回报**，如果它**从那个状态开始，然后根据我们的策略行事。**
+
+<Tip>
+但是，按照我们的策略行事意味着什么呢？ 毕竟，我们在基于价值的方法中没有策略，因为我们训练的是价值函数而不是策略。
+</Tip>
+
+请记住，**RL 智能体的目标是拥有最优策略 π\*。**
+
+为了找到最优策略，我们了解了两种不同的方法：
+
+- *基于策略的方法：* **直接训练策略**以选择给定状态（或该状态下动作的概率分布）采取什么动作。 在这种情况下，我们**没有价值函数。**
+
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/two-approaches-2.jpg" alt="Two RL approaches"/>
 
 The policy takes a state as input and outputs what action to take at that state (deterministic policy: a policy that output one action given a state, contrary to stochastic policy that output a probability distribution over actions).
@@ -123,6 +92,16 @@ And consequently, **we don't define by hand the behavior of our policy; it's the
 - *Value-based methods:* **Indirectly, by training a value function** that outputs the value of a state or a state-action pair. Given this value function, our policy **will take an action.**
 
 Since the policy is not trained/learned, **we need to specify its behavior.** For instance, if we want a policy that, given the value function, will take actions that always lead to the biggest reward, **we'll create a Greedy Policy.**
+
+
+
+该策略将状态作为输入并输出在该状态下采取的动作（确定性策略：一种在给定状态下输出一个动作的策略，与输出动作概率分布的随机策略相反）。
+
+因此，**我们不手动定义策略的行为；训练过程会去定义它 **。
+
+- 基于价值的方法：**间接地，通过训练输出状态或状态-动作对值的价值函数**。 鉴于此价值函数，我们的策略**将采取行动。**
+
+由于策略没有经过训练/学习，**我们需要指定它的行为。**例如，如果我们想要一个策略，给定价值函数，将采取总是导致最大回报的行动，**我将创建一个贪心策略。**
 
 <figure>
   <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/two-approaches-3.jpg" alt="Two RL approaches"/>
