@@ -39,7 +39,7 @@ The policy takes a state as input and outputs what action to take at that state 
 
 And consequently, **we don't define by hand the behavior of our policy; it's the training that will define it.**
 
-
+ok
 
 - *Value-based methods:* **Indirectly, by training a value function** that outputs the value of a state or a state-action pair. Given this value function, our policy **will take an action.**
 
