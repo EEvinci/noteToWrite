@@ -1,4 +1,4 @@
-# Hands-on [[hands-on]]
+# 实践时间
 
       <CourseFloatingBanner classNames="absolute z-10 right-0 top-0"
       notebooks={[
@@ -8,73 +8,69 @@
 
 
 
-Now that we studied the Q-Learning algorithm, let's implement it from scratch and train our Q-Learning agent in two environments:
-1. [Frozen-Lake-v1  (non-slippery and slippery version)](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/) ☃️ : where our agent will need to **go from the starting state (S) to the goal state (G)** by walking only on frozen tiles (F) and avoiding holes (H).
-2. [An autonomous taxi](https://www.gymlibrary.dev/environments/toy_text/taxi/) 🚖 will need **to learn to navigate** a city to **transport its passengers from point A to point B.**
+既然我们已经学习了Q-Learning算法，那让我们从头开始实现它，并在两个环境中训练我们的Q-Learning智能体：
+
+1. [Frozen-Lake-v1 (非滑动和滑动版本)](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/) ☃️ : 智能体需要**从起始状态 (initial state - S) 到达目标状态 (goal state - G)**，只能在冰冻的瓷砖 (frozen tiles - F) 上行走，避免掉入洞 (holes - H)。
+2. [一个自动驾驶出租车](https://www.gymlibrary.dev/environments/toy_text/taxi/) 🚖 ：智能体需要**学习如何导航**一个城市，**将乘客从A点运送到B点。**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/envs.gif" alt="Environments"/>
 
-Thanks to a [leaderboard](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard), you'll be able to compare your results with other classmates and exchange the best practices to improve your agent's scores. Who will win the challenge for Unit 2?
+借助[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)，你可以将你的结果与其他同学进行比较，并交流最佳的实现方法，以提高你的智能体的分数。谁会赢得第二单元的挑战呢？
 
-To validate this hands-on for the [certification process](https://huggingface.co/deep-rl-course/en/unit0/introduction#certification-process), you need to push your trained Taxi model to the Hub and **get a result of >= 4.5**.
+为了通过[认证过程](https://huggingface.co/deep-rl-course/en/unit0/introduction#certification-process)，你需要将你训练好的出租车模型推送到Hub，并**获得>= 4.5的结果**。
 
-To find your result, go to the [leaderboard](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard) and find your model, **the result = mean_reward - std of reward**
+要找到你的结果，去[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)并找到你的模型，**结果 = 平均奖励 - 奖励的标准差**
 
-For more information about the certification process, check this section 👉 https://huggingface.co/deep-rl-course/en/unit0/introduction#certification-process
+关于认证过程的更多信息，请查看这一部分 👉 https://huggingface.co/deep-rl-course/en/unit0/introduction#certification-process
 
-And you can check your progress here 👉 https://huggingface.co/spaces/ThomasSimonini/Check-my-progress-Deep-RL-Course
+你可以在这里查看你的进度 👉 https://huggingface.co/spaces/ThomasSimonini/Check-my-progress-Deep-RL-Course
 
-
-**To start the hands-on click on Open In Colab button** 👇 :
+**要开始动手操作，请点击Open In Colab按钮** 👇 :
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/huggingface/deep-rl-class/blob/master/notebooks/unit2/unit2.ipynb)
 
 
-# Unit 2: Q-Learning with FrozenLake-v1 ⛄ and Taxi-v3 🚕
+# 第二单元: 在 FrozenLake-v1 ⛄ 和 Taxi-v3 🚕 中实现Q-Learning
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/thumbnail.jpg" alt="Unit 2 Thumbnail">
 
-In this notebook, **you'll code from scratch your first Reinforcement Learning agent** playing FrozenLake ❄️ using Q-Learning, share it to the community, and experiment with different configurations.
+在这个笔记本中，**你将从头开始编写你的第一个强化学习智能体**，在FrozenLake❄️游戏中使用Q-Learning算法进行训练，并将它与社区中的小伙伴们分享，还可以尝试不同的配置。
 
-
-⬇️ Here is an example of what **you will achieve in just a couple of minutes.** ⬇️
-
+⬇️ 下面是一个例子，**你只需要几分钟就能完成**。⬇️
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/envs.gif" alt="Environments"/>
 
-### 🎮 Environments:
+### 🎮 环境：
 
 - [FrozenLake-v1](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/)
 - [Taxi-v3](https://www.gymlibrary.dev/environments/toy_text/taxi/)
 
-### 📚 RL-Library:
+### 📚 RL-库:
 
 - Python and NumPy
 - [Gym](https://www.gymlibrary.dev/)
 
-We're constantly trying to improve our tutorials, so **if you find some issues in this notebook**, please [open an issue on the GitHub Repo](https://github.com/huggingface/deep-rl-class/issues).
+我们致力于不断改善我们的教程，所以如果你对教程有一些建议，请在[Github仓库中提交PR](https://github.com/huggingface/deep-rl-class/issues)
 
-## Objectives of this notebook 🏆
+## 这个笔记本的目标 🏆
 
-At the end of the notebook, you will:
+在笔记本的最后，你将：
 
-- Be able to use **Gym**, the environment library.
-- Be able to code from scratch a Q-Learning agent.
-- Be able to **push your trained agent and the code to the Hub** with a nice video replay and an evaluation score 🔥.
+- 能够使用**Gym**，这是一个环境库。
+- 能够从头开始编写一个Q学习智能体。
+- 能够**将你训练好的智能体和代码推送到Hub**，并附上一个漂亮的视频回放和一个评估分数 🔥。
 
 
-## Prerequisites 🏗️
-Before diving into the notebook, you need to:
+## 实践前提 🏗️
+在深入学习该笔记之前，你需要:
 
-🔲 📚 **Study [Q-Learning by reading Unit 2](https://huggingface.co/deep-rl-course/unit2/introduction)**  🤗
+🔲 📚 **通过阅读第二单元来学习[Q-Learning](https://huggingface.co/deep-rl-course/unit2/introduction)** 🤗
 
-## A small recap of Q-Learning
+## Q-Learning的简要回顾
 
-- The *Q-Learning* **is the RL algorithm that**
-
-  - Trains *Q-Function*, an **action-value function** that contains, as internal memory, a *Q-table* **that contains all the state-action pair values.**
-
-  - Given a state and action, our Q-Function **will search into its Q-table the corresponding value.**
+- *Q-Learning* **是一种强化学习算法，它**
+  - 训练*Q函数*，一个**动作价值函数**，它包含了一个作为内部记忆的*Q-table*，**其中包含了所有状态-动作对的值。**
+  - 给定一个状态和动作，我们的Q函数**将在其Q-table中搜索相应的值。**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-function-2.jpg" alt="Q function"  width="100%"/>
 
@@ -682,11 +678,11 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
 
     # Don't forget to check if you need to add additional attributes (is_slippery=False etc)
     env = gym.make(model["env_id"])
-    ```
+```
     """
-
+    
     evaluate_agent(env, model["max_steps"], model["n_eval_episodes"], model["qtable"], model["eval_seed"])
-
+    
     readme_path = repo_local_path / "README.md"
     readme = ""
     print(readme_path.exists())
@@ -695,24 +691,24 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
             readme = f.read()
     else:
         readme = model_card
-
+    
     with readme_path.open("w", encoding="utf-8") as f:
         f.write(readme)
-
+    
     # Save our metrics to Readme metadata
     metadata_save(readme_path, metadata)
-
+    
     # Step 6: Record a video
     video_path = repo_local_path / "replay.mp4"
     record_video(env, model["qtable"], video_path, video_fps)
-
+    
     # Step 7. Push everything to the Hub
     api.upload_folder(
         repo_id=repo_id,
         folder_path=repo_local_path,
         path_in_repo=".",
     )
-
+    
     print("Your model is pushed to the Hub. You can view your model here: ", repo_url)
 ```
 

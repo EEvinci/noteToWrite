@@ -1,25 +1,28 @@
 # Q-Learning Recap [[q-learning-recap]]
 
-
-The *Q-Learning* **is the RL algorithm that** :
+*Q-Learning*是一种强化学习算法，其主要特点是：
 
 - Trains *Q-function*, an **action-value function** that contains, as internal memory, a *Q-table* **that contains all the state-action pair values.**
 
 - Given a state and action, our Q-function **will search into its Q-table the corresponding value.**
 
+- 训练Q函数，Q函数是一个**动作-价值函数**，它包含了一个内部记忆，即一个**包含了所有状态-动作对值的Q-table**。
+
+- 给定一个状态和动作，Q函数**会在Q-table中搜索对应的值**。
+
+
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-function-2.jpg" alt="Q function"  width="100%"/>
 
-- When the training is done,**we have an optimal Q-function, so an optimal Q-table.**
+- 当训练完成时，**我们有了一个最优的Q函数，也就是一个最优的Q-table**。
 
-- And if we **have an optimal Q-function**, we
-have an optimal policy,since we **know for each state, what is the best action to take.**
+- 如果我们**有了一个最优的Q函数**，那么就有了一个最优的策略，因为**对于每个状态，我们都知道最好的动作是哪个**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/link-value-policy.jpg" alt="Link value policy"  width="100%"/>
 
-But, in the beginning, our **Q-table is useless since it gives arbitrary value for each state-action pair (most of the time we initialize the Q-table to 0 values)**. But, as we’ll explore the environment and update our Q-table it will give us better and better approximations
+但是，在开始时，**Q-table是没有用的，因为它给每个状态-动作对一个任意的值（大多数情况下我们把Q-table初始化为0值）**。但是，当我们探索环境并更新Q-table时，它会给我们越来越好的近似值。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/q-learning.jpeg" alt="q-learning.jpeg" width="100%"/>
 
-This is the Q-Learning pseudocode:
+以下是Q-Learning伪代码：
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-2.jpg" alt="Q-Learning" width="100%"/>

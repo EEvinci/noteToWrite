@@ -1,4 +1,4 @@
-# Q-learning算法简介
+# Q-learning算法介绍
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/thumbnail.jpg" alt="Unit 2 thumbnail" width="100%">
 
