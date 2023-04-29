@@ -1,89 +1,90 @@
-# Two types of value-based methods [[two-types-value-based-methods]]
+# 两种基于价值的方法
 
-In value-based methods, **we learn a value function** that **maps a state to the expected value of being at that state.**
+在基于价值的方法中，**我们将学习一个价值函数**，该价值函数可以估算在某个状态下所能获得的预期回报，即它**将一个状态映射到处于该状态的期望值**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/vbm-1.jpg" alt="Value Based Methods"/>
 
-The value of a state is the **expected discounted return** the agent can get if it **starts at that state and then acts according to our policy.**
+一个状态的价值是智能体**按照给定策略**，**从当前状态开始行动**所能获得的预期折扣回报。
 
 <Tip>
-But what does it mean to act according to our policy? After all, we don't have a policy in value-based methods since we train a value function and not a policy.
+
+按照给定策略行动是什么意思呢？因为在基于价值的方法中没有策略，我们训练的是价值函数，而不是策略。
+
 </Tip>
 
-Remember that the goal of an **RL agent is to have an optimal policy π\*.**
+要记得**智能体的目标是有一个最优策略π\*。**
 
-To find the optimal policy, we learned about two different methods:
+为了找到最优策略，我们使用两种不同的方法进行学习：
 
-- *Policy-based methods:* **Directly train the policy** to select what action to take given a state (or a probability distribution over actions at that state). In this case, we **don't have a value function.**
+- *基于策略的方法：* **直接训练策略**，以选择在给定状态下采取的动作（或者在该状态下的动作概率分布）。在这种情况下，我们**没有价值函数。**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/two-approaches-2.jpg" alt="Two RL approaches"/>
 
-The policy takes a state as input and outputs what action to take at that state (deterministic policy: a policy that output one action given a state, contrary to stochastic policy that output a probability distribution over actions).
+策略以状态为输入，输出在该状态下要采取的动作（确定性策略：给定状态输出一个动作的策略，与随机策略相反，随机策略输出动作的概率分布）。
 
-And consequently, **we don't define by hand the behavior of our policy; it's the training that will define it.**
+因此，**我们不是直接设定策略的行为；而是通过训练价值函数来间接的确定策略。**
 
-- *Value-based methods:* **Indirectly, by training a value function** that outputs the value of a state or a state-action pair. Given this value function, our policy **will take an action.**
+- *基于价值的方法：* **通过训练一个价值函数来间接地确定策略。**这个价值函数会输出一个状态或者状态-动作对的价值。给定这个价值函数，我们的策略**将采取相应的动作。**
 
-Since the policy is not trained/learned, **we need to specify its behavior.** For instance, if we want a policy that, given the value function, will take actions that always lead to the biggest reward, **we'll create a Greedy Policy.**
+由于策略没有被训练/学习，**我们需要指定它的行为。**例如，如果我们想要一个策略，使得其满足：给定价值函数，它将总是采取能够带来最大奖励的动作。这意味着**我们需要定义一个贪婪策略。**
 
 <figure>
   <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/two-approaches-3.jpg" alt="Two RL approaches"/>
-  <figcaption>Given a state, our action-value function (that we train) outputs the value of each action at that state. Then, our pre-defined Greedy Policy selects the action that will yield the highest value given a state or a state action pair.</figcaption>
+  <figcaption>给定一个状态，动作-价值函数会输出在该状态下每个动作的价值。然后，我们预定义的贪婪策略会根据状态或状态-动作对选择具有最高价值的动作。</figcaption>
 </figure>
 
 
-Consequently, whatever method you use to solve your problem, **you will have a policy**. In the case of value-based methods, you don't train the policy: your policy **is just a simple pre-specified function** (for instance, Greedy Policy) that uses the values given by the value-function to select its actions.
 
-So the difference is:
+因此，无论我们使用哪种方法来解决问题，**我们都要有一个策略**。在基于价值的方法中，我们不需要训练策略：策略**只是一个简单的预先指定的函数**（例如贪婪策略），它使用价值函数给出的值来选择动作。
 
-- In policy-based, **the optimal policy (denoted π\*) is found by training the policy directly.**
-- In value-based, **finding an optimal value function (denoted Q\* or V\*, we'll study the difference after) leads to having an optimal policy.**
+所以区别在于：
+
+- 在基于策略的方法中，**通过直接训练策略来找到最优策略（表示为π\*）。**
+- 在基于价值的方法中，**找到最优价值函数（表示为Q\*或V\*，我们稍后会讨论区别）意味着拥有了最优策略。**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/link-value-policy.jpg" alt="Link between value and policy"/>
 
-In fact, most of the time, in value-based methods, you'll use **an Epsilon-Greedy Policy** that handles the exploration/exploitation trade-off; we'll talk about it when we talk about Q-Learning in the second part of this unit.
+其实大多数时候，在基于价值的方法中，我们会使用**Epsilon贪心策略**来处理探索和利用之间的权衡问题；在本单元第二部分讨论Q-Learning时，我们会谈到这个问题。
 
+所以，现在我们有两种类型的基于价值的函数：
 
-So, we have two types of value-based functions:
+## 状态价值函数
 
-## The state-value function [[state-value-function]]
-
-We write the state value function under a policy π like this:
+策略π下的状态价值函数如下所示：
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/state-value-function-1.jpg" alt="State value function"/>
 
-For each state, the state-value function outputs the expected return if the agent **starts at that state** and then follows the policy forever afterward (for all future timesteps, if you prefer).
+对于每个状态，状态价值函数会输出智能体按照给定策略（也可以理解为所有未来的时间步）**从当前状态开始行动**所能获得的预期回报。
 
 <figure>
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/state-value-function-2.jpg" alt="State value function"/>
-  <figcaption>If we take the state with value -7: it's the expected return starting at that state and taking actions according to our policy (greedy policy), so right, right, right, down, down, right, right.</figcaption>
+  <figcaption>如果我们取价值为-7的状态：它表示在该状态下按照我们的策略（贪婪策略）采取行动，所以是：右，右，右，下，下，右，右。</figcaption>
 </figure>
 
+## 动作价值函数
 
-## The action-value function [[action-value-function]]
+在动作-价值函数中，对于每个状态和动作对，动作-价值函数会输出智能体按照给定策略，从当前状态开始行动所能获得的**预期回报**。
 
-In the action-value function, for each state and action pair, the action-value function **outputs the expected return** if the agent starts in that state and takes action, and then follows the policy forever after.
-
-The value of taking action \\(a\\) in state \\(s\\) under a policy \\(π\\) is:
+在策略\(π\)下，智能体在状态\(s\)中执行动作\(a\)的价值计算如下所示：
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/action-state-value-function-1.jpg" alt="Action State value function"/>
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/action-state-value-function-2.jpg" alt="Action State value function"/>
 
+我们可以看到两者之间的区别是：
 
-We see that the difference is:
-
-- In state-value function, we calculate **the value of a state \\(S_t\\)**
-- In action-value function, we calculate **the value of the state-action pair ( \\(S_t, A_t\\) ) hence the value of taking that action at that state.**
+- 在状态价值函数中，我们计算**状态\(S_t\)的价值**
+- 在动作价值函数中，我们计算**状态-动作对（\(S_t, A_t\)）的价值，即在该状态下采取该动作的价值。**
 
 <figure>
   <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/two-types.jpg" alt="Two types of value function"/>
   <figcaption>
-Note: We didn't fill all the state-action pairs for the example of Action-value function</figcaption>
+注意：我们没有为动作-值函数示例中的所有状态-动作对都填上数值。</figcaption>
 </figure>
 
 
-In either case, whatever value function we choose (state-value or action-value function), **the returned value is the expected return.**
 
-However, the problem is that it implies that **to calculate EACH value of a state or a state-action pair, we need to sum all the rewards an agent can get if it starts at that state.**
+无论哪种情况，无论我们选择哪种价值函数（状态-价值或动作-价值函数），**返回的值都是期望回报。**
 
-This can be a computationally expensive process, and that's **where the Bellman equation comes to help us.**
+然而，问题是这意味着**要计算每个状态或状态-动作对的价值，我们需要求和智能体从该状态开始可以获得的所有奖励。**
+
+该过程计算成本可能比较高，所以接下来**我们将要用到贝尔曼方程。**
