@@ -75,14 +75,14 @@ Q-Learning是一种**离线策略的基于价值**的方法，它**使用时序�
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-4.jpg" alt="Q-learning"/>
 
-ε-贪婪策略是一种处理探索与利用权衡的策略。
+epsilon-贪婪策略是一种处理探索与利用权衡的策略。
 
 其思想是首先定义初始 epsilon ɛ = 1.0：
 
 - *概率 1 — ɛ*：智能体进行**利用**（即智能体选择具有最高状态-动作对值的动作）。
 - 概率 ɛ：**智能体进行探索**（尝试随机动作）。
 
-在训练开始时，**由于 ɛ 值很高，进行探索的概率会很大，所以智能体大部分时间都在探索。但随着训练的进行，Q-表在估计中越来越准确，所以逐渐降低 epsilon 值**，因为智能体逐渐不需要探索，而需要更多地进行利用。
+在训练开始时，**由于 ɛ 值很高，进行探索的概率会很大，所以智能体大部分时间都在探索。但随着训练的进行，Q-表在估计中越来越准确，所以逐渐降低 epsilon 值**，因为智能体逐渐不再需要探索，而需要更多地进行利用。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-5.jpg" alt="Q-learning"/>
 

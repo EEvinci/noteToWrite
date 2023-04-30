@@ -8,19 +8,14 @@
 
 
 
-Now that we studied the Q-Learning algorithm, let's implement it from scratch and train our Q-Learning agent in two environments:
-
-1. [Frozen-Lake-v1  (non-slippery and slippery version)](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/) ☃️ : where our agent will need to **go from the starting state (S) to the goal state (G)** by walking only on frozen tiles (F) and avoiding holes (H).
-2. [An autonomous taxi](https://www.gymlibrary.dev/environments/toy_text/taxi/) 🚖 will need **to learn to navigate** a city to **transport its passengers from point A to point B.**
-
 之前我们已经学习了Q-Learning算法，现在我们要从头实现它，并在两个环境中训练Q-Learning智能体：
 
-1. [Frozen-Lake-v1（非滑冰和滑冰版本）](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/)☃️：智能体需要**从起始状态（S）到达目标状态（G）**，只在冰冻的瓷砖（F）上行走，避免掉入洞穴（H）。
+1. [Frozen-Lake-v1（非滑动和滑动版本）](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/)☃️：智能体需要**从起始状态（S）到达目标状态（G）**，只在冰冻的瓷砖（F）上行走，避免掉入洞穴（H）。
 2. [自动驾驶出租车](https://www.gymlibrary.dev/environments/toy_text/taxi/)🚖：智能体需要**学会在城市中导航**，以便将乘客从A点运输到B点。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/envs.gif" alt="Environments"/>
 
-在[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)，你可以比较自己和其他同学的结果并相互交流，探讨最好的实现方法以提高智能体的分数。谁将赢得该挑战？拭目以待！
+在[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)中你可以比较自己和其他同学的结果并相互交流，探讨最好的实现方法以提高智能体的分数。谁将赢得该挑战？拭目以待！
 
 为了完成这个实践部分的[认证过程](https://huggingface.co/deep-rl-course/en/unit0/introduction#certification-process)，你需要将你训练过的出租车模型推送到Hub，并**获得>= 4.5的成绩**。
 
@@ -57,84 +52,60 @@ Now that we studied the Q-Learning algorithm, let's implement it from scratch an
 
 我们致力于改进完善该教程，所以**如果你在该教程中发现了一些问题**，请[在GitHub Repo上提出](https://github.com/huggingface/deep-rl-class/issues)。
 
-## Objectives of this notebook 🏆
-
-At the end of the notebook, you will:
-
-- Be able to use **Gym**, the environment library.
-- Be able to code from scratch a Q-Learning agent.
-- Be able to **push your trained agent and the code to the Hub** with a nice video replay and an evaluation score 🔥.
-
 ## 本单元的目标 🏆
 
-在单元结束时，您将：
+在单元结束时，你将：
 
 - 能够使用**Gym**环境库。
 - 能够从头编写一个Q-Learning智能体。
-- 能够**将您的训练过的智能体及其代码推送到Hub**，并附上精美的视频回放和评估得分🔥。
+- 能够**将你的训练过的智能体及其代码推送到Hub**，并附上精美的视频回放和评估得分🔥。
 
+## 知识前提 🏗️
 
-## Prerequisites 🏗️
-
-Before diving into the notebook, you need to:
-
-🔲 📚 **Study [Q-Learning by reading Unit 2](https://huggingface.co/deep-rl-course/unit2/introduction)**  🤗
-
-## 先决条件 🏗️
-
-在深入了解笔记本之前，您需要：
+在深入了解笔记本之前，你需要：
 
 🔲 📚 **通过阅读Unit 2学习[Q-Learning](https://huggingface.co/deep-rl-course/unit2/introduction)** 🤗
 
-## A small recap of Q-Learning
-
-- The *Q-Learning* **is the RL algorithm that**
-
-  - Trains *Q-Function*, an **action-value function** that contains, as internal memory, a *Q-table* **that contains all the state-action pair values.**
-- Given a state and action, our Q-Function **will search into its Q-table the corresponding value.**
-
 ## Q-Learning的简要回顾
 
-- *Q-Learning* **是一种强化学习算法，具有以下特点**：
-  - 训练*Q函数*，一种**动作-价值函数**，其内部存储有一个*Q表*，**包含所有状态-动作对的值**。
-  - 给定一个状态和动作，我们的Q函数**将在其Q表中查找相应的值**。
+- Q-Learning算法是**一种强化学习算法**，具有以下主要特点：
+  - 它会训练一个Q函数，这是一种**动作-价值函数**，其内部有一个Q表，用于**存储所有状态-动作对的值**。
+  - 当给定一个状态和动作时，Q函数**会在Q表中查找相应的值**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-function-2.jpg" alt="Q function"  width="100%"/>
 
-- When the training is done,**we have an optimal Q-Function, so an optimal Q-Table.**
-
-- And if we **have an optimal Q-function**, we
-  have an optimal policy,since we **know for each state, what is the best action to take.**
+- 在训练完成后，我们会得到一个**最优的Q函数**，**从而获得一个最优的Q表**。
+- 当我们拥有一个**最优的Q函数**时，我们就能得到一个最优策略，因为我们知道**在每个状态下应该采取什么最佳动作。**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/link-value-policy.jpg" alt="Link value policy"  width="100%"/>
 
-
-But, in the beginning, our **Q-Table is useless since it gives arbitrary value for each state-action pair (most of the time we initialize the Q-Table to 0 values)**. But, as we’ll explore the environment and update our Q-Table it will give us better and better approximations
+然而，在一开始，**我们的Q表是没用的**，**因为它为每个状态-动作对提供了任意的值（通常我们会将Q表初始化为全零值）**。但随着我们不断地探索环境并更新Q表，它将为我们提供越来越好的近似值。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/q-learning.jpeg" alt="q-learning.jpeg" width="100%"/>
 
-This is the Q-Learning pseudocode:
+以下是Q-Learning算法的伪代码：
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-2.jpg" alt="Q-Learning" width="100%"/>
 
 
-# Let's code our first Reinforcement Learning algorithm 🚀
 
-## Install dependencies and create a virtual display 🔽
+# 让我们开始编写第一个强化学习算法 🚀
 
-In the notebook, we'll need to generate a replay video. To do so, with Colab, **we need to have a virtual screen to render the environment** (and thus record the frames).
+## 安装依赖并创建虚拟显示 🔽
 
-Hence the following cell will install the libraries and create and run a virtual screen 🖥
+在笔记中，我们需要生成一个回放视频。所以在Colab中，**我们需要一个虚拟屏幕来呈现环境**（从而录制视频帧）。
 
-We’ll install multiple ones:
+因此，下面的单元格将安装库并创建并运行一个虚拟屏幕🖥
 
-- `gym`: Contains the FrozenLake-v1 ⛄ and Taxi-v3 🚕 environments. We use `gym==0.24` since it contains a nice Taxi-v3 UI version.
-- `pygame`: Used for the FrozenLake-v1 and Taxi-v3 UI.
-- `numpy`: Used for handling our Q-table.
+我们将安装多个库：
 
-The Hugging Face Hub 🤗 works as a central place where anyone can share and explore models and datasets. It has versioning, metrics, visualizations and other features that will allow you to easily collaborate with others.
+- `gym`：包含FrozenLake-v1⛄和Taxi-v3🚕环境。我们使用`gym==0.24`，因为它包含一个漂亮的Taxi-v3 UI版本。
+- `pygame`：用于FrozenLake-v1和Taxi-v3的UI。
+- `numpy`：用于处理我们的Q-table。
 
-You can see here all the Deep RL models available (if they use Q Learning) 👉 https://huggingface.co/models?other=q-learning
+Hugging Face Hub 🤗 作为一个中心平台，任何人都可以在此共享和探索模型和数据集。它具有版本控制、度量、可视化等功能，使你可以轻松与他人合作。
+
+你可以在这里查看所有可用的深度强化学习模型（如果它们使用Q-Learning）👉 https://huggingface.co/models?other=q-learning
 
 ```bash
 pip install -r https://raw.githubusercontent.com/huggingface/deep-rl-class/main/notebooks/unit2/requirements-unit2.txt
@@ -146,7 +117,7 @@ apt install python-opengl ffmpeg xvfb
 pip3 install pyvirtualdisplay
 ```
 
-To make sure the new installed libraries are used, **sometimes it's required to restart the notebook runtime**. The next cell will force the **runtime to crash, so you'll need to connect again and run the code starting from here**. Thanks for this trick, **we will be able to run our virtual screen.**
+为了确保能够使用新安装的库，**有时我们需要重新启动笔记本的运行时环境**。下一个单元格将强制**运行时环境崩溃，这样你就需要重新连接并从这里开始运行代码**。多亏了这个技巧，**我们才能运行我们的虚拟屏幕**。
 
 ```python
 import os
@@ -162,12 +133,12 @@ virtual_display = Display(visible=0, size=(1400, 900))
 virtual_display.start()
 ```
 
-## Import the packages 📦
+## 导入包 📦
 
-In addition to the installed libraries, we also use:
+除了安装的库之外，我们还使用：
 
-- `random`: To generate random numbers (that will be useful for epsilon-greedy policy).
-- `imageio`: To generate a replay video.
+- `random`：生成随机数（对于epsilon-贪婪策略非常有用）。
+- `imageio`：生成回放视频。
 
 ```python
 import numpy as np
@@ -180,101 +151,100 @@ import pickle5 as pickle
 from tqdm.notebook import tqdm
 ```
 
-We're now ready to code our Q-Learning algorithm 🔥
+接下来我们正式进入Q-Learning算法的代码部分 🔥
 
-# Part 1: Frozen Lake ⛄ (non slippery version)
+# Part 1: Frozen Lake ⛄ (非滑动版本)
 
-## Create and understand [FrozenLake environment ⛄](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/)
+## 创建并理解 [FrozenLake 环境⛄](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/)
 
----
 
-💡 A good habit when you start to use an environment is to check its documentation
+
+💡 一个好的习惯是在开始使用一个环境之前先查看其使用文档
 
 👉 https://www.gymlibrary.dev/environments/toy_text/frozen_lake/
 
 ---
 
-We're going to train our Q-Learning agent **to navigate from the starting state (S) to the goal state (G) by walking only on frozen tiles (F) and avoid holes (H)**.
+我们将使用Q-Learning算法来训练智能体，使其**仅在冰冻砖块（F）上行走，并避开洞穴（H），从起始状态（S）导航至目标状态（G）**。
 
-We can have two sizes of environment:
+我们有两种规格的环境：
 
-- `map_name="4x4"`: a 4x4 grid version
-- `map_name="8x8"`: a 8x8 grid version
+- `map_name="4x4"`：一个4x4的网格版本
+- `map_name="8x8"`：一个8x8的网格版本
 
+环境有两种模式：
 
-The environment has two modes:
+- `is_slippery=False`：由于冰冻湖面的非滑动性质，智能体总是沿着**预期的方向移动**（确定性）。
+- `is_slippery=True`：由于冰冻湖面的滑动性质，智能体**可能不会总是沿着预期的方向移动**（随机性）。
 
-- `is_slippery=False`: The agent always moves **in the intended direction** due to the non-slippery nature of the frozen lake (deterministic).
-- `is_slippery=True`: The agent **may not always move in the intended direction** due to the slippery nature of the frozen lake (stochastic).
-
-For now let's keep it simple with the 4x4 map and non-slippery
+现在我们先用4x4的地图和非滑动版本来简化问题。
 
 ```python
-# Create the FrozenLake-v1 environment using 4x4 map and non-slippery version
-env = gym.make()  # TODO use the correct parameters
+# 使用正确的参数创建FrozenLake-v1环境，使用4x4地图和非滑动版本
+env = gym.make()  # TODO 使用正确的参数
 ```
 
-### Solution
+### 答案
 
 ```python
 env = gym.make("FrozenLake-v1", map_name="4x4", is_slippery=False)
 ```
 
-You can create your own custom grid like this:
+你可以像这样创建自己的自定义网格：
 
 ```python
 desc=["SFFF", "FHFH", "FFFH", "HFFG"]
 gym.make('FrozenLake-v1', desc=desc, is_slippery=True)
 ```
 
-but we'll use the default environment for now.
+但我们现在将使用默认的环境。
 
-### Let's see what the Environment looks like:
+### 让我们看看环境的样子：
 
 
 ```python
-# We create our environment with gym.make("<name_of_the_environment>")- `is_slippery=False`: The agent always moves in the intended direction due to the non-slippery nature of the frozen lake (deterministic).
+# 我们用gym.make("<name_of_the_environment>")创建环境- is_slippery=False：由于冰冻湖面的非滑动性质，智能体总是沿着预期的方向移动（确定性）
 print("_____OBSERVATION SPACE_____ \n")
 print("Observation Space", env.observation_space)
-print("Sample observation", env.observation_space.sample())  # Get a random observation
+print("Sample observation", env.observation_space.sample())  # 获得一个随机观测值
 ```
 
-We see with `Observation Space Shape Discrete(16)` that the observation is an integer representing the **agent’s current position as current_row * nrows + current_col (where both the row and col start at 0)**.
+我们通过`Observation Space Shape Discrete(16)`可以看到，观测值是一个整数，表示**智能体当前位置为current_row \* nrows + current_col（其中行和列都从0开始）**。
 
-For example, the goal position in the 4x4 map can be calculated as follows: 3 * 4 + 3 = 15. The number of possible observations is dependent on the size of the map. **For example, the 4x4 map has 16 possible observations.**
+例如，4x4地图中的目标位置可以按以下方式计算：3 * 4 + 3 = 15。可能的观测值数量取决于地图的大小。**例如，4x4地图有16个可能的观测值。**
 
-
-For instance, this is what state = 0 looks like:
+例如，这是 state = 0 的样子：
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/frozenlake.png" alt="FrozenLake">
 
 ```python
 print("\n _____ACTION SPACE_____ \n")
 print("Action Space Shape", env.action_space.n)
-print("Action Space Sample", env.action_space.sample())  # Take a random action
+print("Action Space Sample", env.action_space.sample())  # 采取一个随机动作
 ```
 
-The action space (the set of possible actions the agent can take) is discrete with 4 actions available 🎮:
+动作空间（智能体可采取的动作集合）是离散的，有4个可用动作🎮：
 
-- 0: GO LEFT
-- 1: GO DOWN
-- 2: GO RIGHT
-- 3: GO UP
+- 0：向左走
+- 1：向下走
+- 2：向右走
+- 3：向上走
 
-Reward function 💰:
+奖励函数💰：
 
-- Reach goal: +1
-- Reach hole: 0
-- Reach frozen: 0
+- 到达目标：+1
+- 到达洞穴：0
+- 到达冰冻：0
 
-## Create and Initialize the Q-table 🗄️
+## 创建并初始化 Q-table 🗄️
 
-(👀 Step 1 of the pseudocode)
+(👀 以下是Q-Learning算法的伪代码)
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-2.jpg" alt="Q-Learning" width="100%"/>
 
-
 It's time to initialize our Q-table! To know how many rows (states) and columns (actions) to use, we need to know the action and observation space. We already know their values from before, but we'll want to obtain them programmatically so that our algorithm generalizes for different environments. Gym provides us a way to do that: `env.action_space.n` and `env.observation_space.n`
+
+现在是初始化我们的Q表的时候了！为了知道要使用多少行（状态）和列（动作），我们需要了解动作和观测空间。虽然我们之前已经知道了动作和观测空间的数值，但是为了算法能够适用于不同的环境，我们在程序中以变量的形式对它们进行存储。Gym 为我们提供了一种方法：`env.action_space.n` 和 `env.observation_space.n`。
 
 
 ```python
@@ -286,7 +256,7 @@ print("There are ", action_space, " possible actions")
 ```
 
 ```python
-# Let's create our Qtable of size (state_space, action_space) and initialized each values at 0 using np.zeros
+# 创建一个大小为（state_space，action_space）的 Q-table，并使用 np.zeros 将每个值初始化为 0
 def initialize_q_table(state_space, action_space):
   Qtable =
   return Qtable
@@ -296,7 +266,7 @@ def initialize_q_table(state_space, action_space):
 Qtable_frozenlake = initialize_q_table(state_space, action_space)
 ```
 
-### Solution
+### 答案
 
 ```python
 state_space = env.observation_space.n
@@ -307,7 +277,7 @@ print("There are ", action_space, " possible actions")
 ```
 
 ```python
-# Let's create our Qtable of size (state_space, action_space) and initialized each values at 0 using np.zeros
+# 创建一个大小为（state_space，action_space）的 Q-table，并使用 np.zeros 将每个值初始化为 0
 def initialize_q_table(state_space, action_space):
     Qtable = np.zeros((state_space, action_space))
     return Qtable
@@ -317,223 +287,222 @@ def initialize_q_table(state_space, action_space):
 Qtable_frozenlake = initialize_q_table(state_space, action_space)
 ```
 
-## Define the greedy policy 🤖
+## 定义贪婪策略 🤖
 
-Remember we have two policies since Q-Learning is an **off-policy** algorithm. This means we're using a **different policy for acting and updating the value function**.
+需要注意的是我们有两个策略，因为 Q-Learning 是一种**离线策略**算法，所以我们**使用不同的策略来更新行动和价值函数**。
 
-- Epsilon-greedy policy (acting policy)
-- Greedy-policy (updating policy)
+- Epsilon 贪婪策略（行动策略）
+- 贪婪策略（更新策略）
 
-Greedy policy will also be the final policy we'll have when the Q-learning agent will be trained. The greedy policy is used to select an action from the Q-table.
+贪婪策略也将是使用 Q-Learning 算法训练智能体后的最终策略，贪婪策略用于从 Q-table 中选择动作。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/off-on-4.jpg" alt="Q-Learning" width="100%"/>
 
 
 ```python
 def greedy_policy(Qtable, state):
-  # Exploitation: take the action with the highest state, action value
+  # 利用：选择具有最高状态-动作价值的动作
   action =
 
   return action
 ```
 
-#### Solution
+#### 答案
 
 ```python
 def greedy_policy(Qtable, state):
-    # Exploitation: take the action with the highest state, action value
+    # 利用：选择具有最高状态-动作价值的动作
     action = np.argmax(Qtable[state][:])
 
     return action
 ```
 
-##Define the epsilon-greedy policy 🤖
+##定义 epsilon 贪婪策略 🤖
 
-Epsilon-greedy is the training policy that handles the exploration/exploitation trade-off.
+Epsilon 贪婪策略是处理探索和利用之间的权衡问题的一种训练策略。
 
-The idea with epsilon-greedy:
+Epsilon 贪婪策略的思想是：
 
-- With *probability 1 - ɛ* : **we do exploitation** (i.e. our agent selects the action with the highest state-action pair value).
+- *概率 1 — ɛ*：智能体进行**利用**（即智能体选择具有最高状态-动作对值的动作）。
+- *概率 ɛ*：**智能体进行探索**（尝试随机动作）。
 
-- With *probability ɛ*: we do **exploration** (trying random action).
-
-And as the training goes, we progressively **reduce the epsilon value since we will need less and less exploration and more exploitation.**
+随着训练的进行，我们逐渐**降低 epsilon 值，因为智能体逐渐不再需要探索，而更多的需要利用**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-4.jpg" alt="Q-Learning" width="100%"/>
 
 
 ```python
 def epsilon_greedy_policy(Qtable, state, epsilon):
-  # Randomly generate a number between 0 and 1
+  # 在 0 和 1 之间随机生成一个数字
   random_num =
-  # if random_num > greater than epsilon --> exploitation
+  # 如果 random_num > epsilon --> 利用
   if random_num > epsilon:
-    # Take the action with the highest value given a state
-    # np.argmax can be useful here
+    # 采取给定状态下最高值的动作
+    # 这里可以用 np.argmax
     action =
-  # else --> exploration
+  # 否则 --> 探索
   else:
-    action = # Take a random action
+    action = # 采取一个随机动作
 
   return action
 ```
 
-#### Solution
+#### 答案
 
 ```python
 def epsilon_greedy_policy(Qtable, state, epsilon):
-    # Randomly generate a number between 0 and 1
+    # 在 0 和 1 之间随机生成一个数字
     random_int = random.uniform(0, 1)
-    # if random_int > greater than epsilon --> exploitation
+    # 如果 random_int > epsilon --> 利用
     if random_int > epsilon:
-        # Take the action with the highest value given a state
-        # np.argmax can be useful here
+        # 采取给定状态下最高值的动作
+        # 这里可以用 np.argmax
         action = greedy_policy(Qtable, state)
-    # else --> exploration
+    # 否则 --> 探索
     else:
         action = env.action_space.sample()
 
     return action
 ```
 
-## Define the hyperparameters ⚙️
+## 定义超参数 ⚙️
 
-The exploration related hyperparamters are some of the most important ones.
+与智能体的探索行动相关的超参数非常重要：
 
-- We need to make sure that our agent **explores enough of the state space** to learn a good value approximation. To do that, we need to have progressive decay of the epsilon.
-- If you decrease epsilon too fast (too high decay_rate), **you take the risk that your agent will be stuck**, since your agent didn't explore enough of the state space and hence can't solve the problem.
+- 我们需要确保智能体能够**充分地探索状态空间**以学习到一个较好的值近似。为了达到这个目标，我们需要逐渐减小epsilon。
+- 但是如果将epsilon减小得太快（衰减率过高），就会**增加智能体陷入困境的风险**，因为它没有充分探索状态空间，所以无法解决问题。
 
 ```python
-# Training parameters
-n_training_episodes = 10000  # Total training episodes
-learning_rate = 0.7  # Learning rate
+# 训练参数
+n_training_episodes = 10000  # 训练回合数
+learning_rate = 0.7  # 学习率
 
-# Evaluation parameters
-n_eval_episodes = 100  # Total number of test episodes
+# 评估参数
+n_eval_episodes = 100  # 测试回合数
 
-# Environment parameters
-env_id = "FrozenLake-v1"  # Name of the environment
-max_steps = 99  # Max steps per episode
-gamma = 0.95  # Discounting rate
-eval_seed = []  # The evaluation seed of the environment
+# 环境参数
+env_id = "FrozenLake-v1"  # 环境名称
+max_steps = 99  # 每次尝试的最大步数
+gamma = 0.95  # 折扣率
+eval_seed = []  # 环境的评估种子
 
-# Exploration parameters
-max_epsilon = 1.0  # Exploration probability at start
-min_epsilon = 0.05  # Minimum exploration probability
-decay_rate = 0.0005  # Exponential decay rate for exploration prob
+# 探索参数
+max_epsilon = 1.0 # 起始探索概率
+min_epsilon = 0.05 # 最小探索概率
+decay_rate = 0.0005 # 探索概率的指数衰减速率
 ```
 
-## Create the training loop method
+## 创建训练函数
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-2.jpg" alt="Q-Learning" width="100%"/>
 
-The training loop goes like this:
+训练的过程以如下方式进行：
 
 ```
-For episode in the total of training episodes:
+在所有训练次数的每个循环中：
 
-Reduce epsilon (since we need less and less exploration)
-Reset the environment
+减少 epsilon（因为智能体逐渐不再需要探索）
+重置环境
 
-  For step in max timesteps:
-    Choose the action At using epsilon greedy policy
-    Take the action (a) and observe the outcome state(s') and reward (r)
-    Update the Q-value Q(s,a) using Bellman equation Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
-    If done, finish the episode
-    Our next state is the new state
+    对于每个最大尝试步数：
+      使用 epsilon 贪婪策略选择动作 At
+      执行动作（a）并观察结果状态（s'）和奖励（r）
+      使用贝尔曼方程更新 Q 值 Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
+      如果完成，结束本回合
+      下一个状态是新状态
 ```
 
 ```python
 def train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable):
   for episode in range(n_training_episodes):
-    # Reduce epsilon (because we need less and less exploration)
+    # 减小 epsilon（因为智能体逐渐不再需要探索）
     epsilon = min_epsilon + (max_epsilon - min_epsilon)*np.exp(-decay_rate*episode)
-    # Reset the environment
+    # 重置环境
     state = env.reset()
     step = 0
     done = False
 
-    # repeat
+    # 重复
     for step in range(max_steps):
-      # Choose the action At using epsilon greedy policy
+      # 使用 epsilon 贪婪策略选择动作 At
       action =
 
-      # Take action At and observe Rt+1 and St+1
-      # Take the action (a) and observe the outcome state(s') and reward (r)
+      # 采取动作 At 并观察 Rt+1 和 St+1
+      # 采取动作（a）并观察结果状态（s'）和奖励（r）
       new_state, reward, done, info =
 
-      # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
+      # 更新 Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
       Qtable[state][action] =
 
-      # If done, finish the episode
+      # 如果完成，结束本次尝试
       if done:
         break
 
-      # Our next state is the new state
+      # 下一个状态是新状态
       state = new_state
   return Qtable
 ```
 
-#### Solution
+#### 答案
 
 ```python
 def train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable):
     for episode in tqdm(range(n_training_episodes)):
-        # Reduce epsilon (because we need less and less exploration)
+        # 减小 epsilon（因为智能体逐渐不再需要探索）
         epsilon = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * episode)
-        # Reset the environment
+        # 重置环境
         state = env.reset()
         step = 0
         done = False
 
-        # repeat
+        # 重复
         for step in range(max_steps):
-            # Choose the action At using epsilon greedy policy
+            # 使用 epsilon 贪婪策略选择动作 At
             action = epsilon_greedy_policy(Qtable, state, epsilon)
 
-            # Take action At and observe Rt+1 and St+1
-            # Take the action (a) and observe the outcome state(s') and reward (r)
+            # 采取动作 At 并观察 Rt+1 和 St+1
+            # 采取动作（a）并观察结果状态（s'）和奖励（r）
             new_state, reward, done, info = env.step(action)
 
-            # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
+            # 更新 Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
             Qtable[state][action] = Qtable[state][action] + learning_rate * (
                 reward + gamma * np.max(Qtable[new_state]) - Qtable[state][action]
             )
 
-            # If done, finish the episode
+            # 如果完成，结束本次尝试
             if done:
                 break
 
-            # Our next state is the new state
+            # 下一个状态是新状态
             state = new_state
     return Qtable
 ```
 
-## Train the Q-Learning agent 🏃
+## 训练 Q-Learning 智能体 🏃
 
 ```python
 Qtable_frozenlake = train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable_frozenlake)
 ```
 
-## Let's see what our Q-Learning table looks like now 👀
+## 查看Q-table中的值 👀
 
 ```python
 Qtable_frozenlake
 ```
 
-## The evaluation method 📝
+## 评估函数 📝
 
-- We defined the evaluation method that we're going to use to test our Q-Learning agent.
+- 定义我们要用来测试 Q-Learning 智能体的评估函数
 
 ```python
 def evaluate_agent(env, max_steps, n_eval_episodes, Q, seed):
     """
-    Evaluate the agent for ``n_eval_episodes`` episodes and returns average reward and std of reward.
-    :param env: The evaluation environment
-    :param n_eval_episodes: Number of episode to evaluate the agent
-    :param Q: The Q-table
-    :param seed: The evaluation seed array (for taxi-v3)
-    """
+    对智能体进行 n_eval_episodes 轮评估，返回平均奖励和奖励的标准差。
+    :param env: 评估环境
+    :param n_eval_episodes: 评估智能体的轮数
+    :param Q: Q-table
+    :param seed: 评估种子数组（用于taxi-v3）
+	"""
     episode_rewards = []
     for episode in tqdm(range(n_eval_episodes)):
         if seed:
@@ -545,7 +514,7 @@ def evaluate_agent(env, max_steps, n_eval_episodes, Q, seed):
         total_rewards_ep = 0
 
         for step in range(max_steps):
-            # Take the action (index) that have the maximum expected future reward given that state
+            # 在给定状态下选择具有最大预期未来奖励的动作（索引）
             action = greedy_policy(Q, state)
             new_state, reward, done, info = env.step(action)
             total_rewards_ep += reward
@@ -560,29 +529,28 @@ def evaluate_agent(env, max_steps, n_eval_episodes, Q, seed):
     return mean_reward, std_reward
 ```
 
-## Evaluate our Q-Learning agent 📈
+## 评估Q-Learning智能体 📈
 
-- Usually, you should have a mean reward of 1.0
-- The **environment is relatively easy** since the state space is really small (16). What you can try to do is [to replace it with the slippery version](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/), which introduces stochasticity, making the environment more complex.
+- 通常应该得到平均奖励为1.0
+- 因为状态空间非常小（16），所以该**环境相对简单**，你可以尝试用[有滑动版本](https://www.gymlibrary.dev/environments/toy_text/frozen_lake/)替换它，这会引入随机性，使环境更加复杂。
 
 ```python
-# Evaluate our Agent
+# 评估智能体
 mean_reward, std_reward = evaluate_agent(env, max_steps, n_eval_episodes, Qtable_frozenlake, eval_seed)
 print(f"Mean_reward={mean_reward:.2f} +/- {std_reward:.2f}")
 ```
 
-## Publish our trained model to the Hub 🔥
+## 将我们的训练模型发布到Hub 🔥
 
-Now that we saw good results after the training, **we can publish our trained model to the Hub 🤗 with one line of code**.
+如果在训练后看到了好的结果，**我们可以用一行代码将训练模型发布到Hugging Face Hub🤗**。
 
-Here's an example of a Model Card:
+这里有一个模型概述卡的例子：
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/modelcard.png" alt="Model card" width="100%"/>
 
+在底层，Hub使用基于git的存储库（如果你不知道git是什么，不用担心），这意味着你可以在实验和改进你的智能体时，用新版本更新模型。
 
-Under the hood, the Hub uses git-based repositories (don't worry if you don't know what git is), which means you can update the model with new versions as you experiment and improve your agent.
-
-#### Do not modify this code
+#### 不要修改这段代码
 
 ```python
 from huggingface_hub import HfApi, snapshot_download
@@ -596,11 +564,11 @@ import json
 ```python
 def record_video(env, Qtable, out_directory, fps=1):
     """
-    Generate a replay video of the agent
+    生成智能体表现的回放视频
     :param env
-    :param Qtable: Qtable of our agent
+    :param Qtable: 我们智能体的Q表
     :param out_directory
-    :param fps: how many frame per seconds (with taxi-v3 and frozenlake-v1 we use 1)
+    :param fps: 每秒帧数（对于taxi-v3和frozenlake-v1，我们使用1）
     """
     images = []
     done = False
@@ -608,9 +576,9 @@ def record_video(env, Qtable, out_directory, fps=1):
     img = env.render(mode="rgb_array")
     images.append(img)
     while not done:
-        # Take the action (index) that have the maximum expected future reward given that state
+        # 在给定状态下选择具有最大预期未来奖励的动作（索引）
         action = np.argmax(Qtable[state][:])
-        state, reward, done, info = env.step(action)  # We directly put next_state = state for recording logic
+        state, reward, done, info = env.step(action)  # 直接将next_state = state用于记录逻辑
         img = env.render(mode="rgb_array")
         images.append(img)
     imageio.mimsave(out_directory, [np.array(img) for i, img in enumerate(images)], fps=fps)
@@ -619,44 +587,44 @@ def record_video(env, Qtable, out_directory, fps=1):
 ```python
 def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
     """
-    Evaluate, Generate a video and Upload a model to Hugging Face Hub.
-    This method does the complete pipeline:
-    - It evaluates the model
-    - It generates the model card
-    - It generates a replay video of the agent
-    - It pushes everything to the Hub
+    评估、生成视频并将模型上传到Hugging Face Hub。
+    该方法完成整个流程：
+    - 它评估模型
+    - 它生成模型概述卡
+    - 它生成智能体的回放视频
+    - 它将所有内容推送到Hub
 
-    :param repo_id: repo_id: id of the model repository from the Hugging Face Hub
+    :param repo_id: Hugging Face Hub中的模型存储库ID
     :param env
-    :param video_fps: how many frame per seconds to record our video replay
-    (with taxi-v3 and frozenlake-v1 we use 1)
-    :param local_repo_path: where the local repository is
+    :param video_fps: 以多少帧每秒录制我们的视频回放
+    (对于taxi-v3和frozenlake-v1，我们使用1)
+    :param local_repo_path: 本地存储库的位置
     """
     _, repo_name = repo_id.split("/")
 
     eval_env = env
     api = HfApi()
 
-    # Step 1: Create the repo
+    # 第一步：创建仓库
     repo_url = api.create_repo(
         repo_id=repo_id,
         exist_ok=True,
     )
 
-    # Step 2: Download files
+    # 第二步：下载文件
     repo_local_path = Path(snapshot_download(repo_id=repo_id))
 
-    # Step 3: Save the model
+    #第三步：保存模型
     if env.spec.kwargs.get("map_name"):
         model["map_name"] = env.spec.kwargs.get("map_name")
         if env.spec.kwargs.get("is_slippery", "") == False:
             model["slippery"] = False
 
-    # Pickle the model
+    # 将模型存储为Pickle文件
     with open((repo_local_path) / "q-learning.pkl", "wb") as f:
         pickle.dump(model, f)
 
-    # Step 4: Evaluate the model and build JSON with evaluation metrics
+    # 第四步：评估模型并构建包含评估指标的JSON文件
     mean_reward, std_reward = evaluate_agent(
         eval_env, model["max_steps"], model["n_eval_episodes"], model["qtable"], model["eval_seed"]
     )
@@ -668,12 +636,11 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
         "eval_datetime": datetime.datetime.now().isoformat(),
     }
 
-    # Write a JSON file called "results.json" that will contain the
-    # evaluation results
+    # 编写一个名为 "results.json" 的JSON文件，其中将包含评估结果
     with open(repo_local_path / "results.json", "w") as outfile:
         json.dump(evaluate_data, outfile)
 
-    # Step 5: Create the model card
+    # 第五步：创建模型概述概述卡
     env_name = model["env_id"]
     if env.spec.kwargs.get("map_name"):
         env_name += "-" + env.spec.kwargs.get("map_name")
@@ -684,7 +651,7 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
     metadata = {}
     metadata["tags"] = [env_name, "q-learning", "reinforcement-learning", "custom-implementation"]
 
-    # Add metrics
+    # 添加指标
     eval = metadata_eval_result(
         model_pretty_name=repo_name,
         task_pretty_name="reinforcement-learning",
@@ -696,20 +663,20 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
         dataset_id=env_name,
     )
 
-    # Merges both dictionaries
+    # 合并两个字典
     metadata = {**metadata, **eval}
 
     model_card = f"""
-    # **Q-Learning** Agent playing1 **{env_id}**
-    This is a trained model of a **Q-Learning** agent playing **{env_id}** .
+    # **Q-Learning** 智能体玩 **{env_id}**
+    这是一个受过训练的**Q-Learning**智能体玩 **{env_id}** 的模型。
 
-    ## Usage
+    ## 用法
 
     ```python
 
     model = load_from_hub(repo_id="{repo_id}", filename="q-learning.pkl")
 
-    # Don't forget to check if you need to add additional attributes (is_slippery=False etc)
+    # 不要忘记检查是否需要添加额外的属性 (is_slippery=False等)
     env = gym.make(model["env_id"])
 ```
 
@@ -729,14 +696,14 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
     with readme_path.open("w", encoding="utf-8") as f:
         f.write(readme)
     
-    # Save our metrics to Readme metadata
+    # 将指标保存到Readme元数据
     metadata_save(readme_path, metadata)
     
-    # Step 6: Record a video
+    # 第六步：录制视频
     video_path = repo_local_path / "replay.mp4"
     record_video(env, model["qtable"], video_path, video_fps)
     
-    # Step 7. Push everything to the Hub
+    # 第七步. 将所有内容推送到Hub
     api.upload_folder(
         repo_id=repo_id,
         folder_path=repo_local_path,
@@ -748,22 +715,23 @@ def push_to_hub(repo_id, model, env, video_fps=1, local_repo_path="hub"):
 ```
 ### .
 
-By using `push_to_hub` **you evaluate, record a replay, generate a model card of your agent and push it to the Hub**.
+通过使用 push_to_hub，你可以评估、录制回放、生成智能体的模型卡片并将其推送到Hub。
 
-This way:
-- You can **showcase our work** 🔥
-- You can **visualize your agent playing** 👀
-- You can **share with the community an agent that others can use** 💾
-- You can **access a leaderboard 🏆 to see how well your agent is performing compared to your classmates** 👉 https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard
+这样：
+
+- 可以展示你的作品 🔥
+- 可以查看智能体的游戏过程 👀
+- 可以与社区分享其他人可以使用的智能体 💾
+- 可以访问排行榜🏆，查看你的智能体与同学相比表现如何 👉 https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard
 
 
-To be able to share your model with the community there are three more steps to follow:
+要与社区共享你的模型，还需遵循以下三个步骤：
 
-1️⃣ (If it's not already done) create an account to HF ➡ https://huggingface.co/join
+1️⃣（如果还没有完成）创建HF帐户 ➡ https://huggingface.co/join
 
-2️⃣ Sign in and then, you need to store your authentication token from the Hugging Face website.
-- Create a new token (https://huggingface.co/settings/tokens) **with write role**
+2️⃣ 登录后，你需要从Hugging Face网站存储你的认证令牌。
 
+创建一个新令牌（https://huggingface.co/settings/tokens）**具有写权限**
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/create-token.jpg" alt="Create HF Token">
 
@@ -774,11 +742,11 @@ from huggingface_hub import notebook_login
 notebook_login()
 ```
 
-If you don't want to use a Google Colab or a Jupyter Notebook, you need to use this command instead: `huggingface-cli login` (or `login`)
+如果你不想使用Google Colab或Jupyter Notebook，可以使用此命令代替：`huggingface-cli login`（或`login`）
 
-3️⃣ We're now ready to push our trained agent to the 🤗 Hub 🔥 using `push_to_hub()` function
+3️⃣ 现在我们准备使用`push_to_hub()`函数将训练好的智能体推送到🤗Hub🔥
 
-- Let's create **the model dictionary that contains the hyperparameters and the Q_table**.
+- 首先创建**包含超参数和Q_table的模型字典**。
 
 ```python
 model = {
@@ -796,27 +764,31 @@ model = {
 }
 ```
 
-Let's fill the `push_to_hub` function:
+填写`push_to_hub`函数：
 
-- `repo_id`: the name of the Hugging Face Hub Repository that will be created/updated `
-  (repo_id = {username}/{repo_name})`
-  💡 A good `repo_id` is `{username}/q-{env_id}`
-- `model`: our model dictionary containing the hyperparameters and the Qtable.
-- `env`: the environment.
-- `commit_message`: message of the commit
+- `repo_id`：将创建/更新的Hugging Face Hub存储库的名称` (repo_id = {username}/{repo_name})` 
+
+  💡 一个好的`repo_id`是`{username}/q-{env_id}`
+
+- `model`：模型字典，包含超参数和Qtable
+
+- `env`：环境
+
+- `commit_message`：提交信息
 
 ```python
 model
 ```
 
 ```python
-username = ""  # FILL THIS
+username = ""  # 填写你的用户名
 repo_name = "q-FrozenLake-v1-4x4-noSlippery"
 push_to_hub(repo_id=f"{username}/{repo_name}", model=model, env=env)
 ```
 
-Congrats 🥳 you've just implemented from scratch, trained and uploaded your first Reinforcement Learning agent.
-FrozenLake-v1 no_slippery is very simple environment, let's try an harder one 🔥.
+恭喜🥳你刚刚从零开始实现、训练并上传了你的第一个强化学习智能体。 
+
+FrozenLake-v1 无滑动版 是一个非常简单的环境，让我们尝试一个更难的环境🔥。
 
 # Part 2: Taxi-v3 🚖
 
