@@ -1,4 +1,4 @@
-# 实践部分
+# 实践时间
 
       <CourseFloatingBanner classNames="absolute z-10 right-0 top-0"
       notebooks={[
@@ -15,7 +15,7 @@
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/envs.gif" alt="Environments"/>
 
-在[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)中你可以比较自己和其他同学的结果并相互交流，探讨最好的实现方法以提高智能体的分数。谁将赢得该挑战？拭目以待！
+在[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)中你可以比较自己和其他同学的结果，并相互交流探讨最好的实现方法以提高智能体的分数。谁将赢得该挑战？拭目以待！
 
 为了完成这个实践部分的[认证过程](https://huggingface.co/deep-rl-course/en/unit0/introduction#certification-process)，你需要将你训练过的出租车模型推送到Hub，并**获得>= 4.5的成绩**。
 
@@ -30,7 +30,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/huggingface/deep-rl-class/blob/master/notebooks/unit2/unit2.ipynb)
 
 
-# Unit 2: 在中FrozenLake-v1 ⛄ and Taxi-v3 🚕使用 Q-Learning 
+# Unit 2: 在FrozenLake-v1 ⛄ 和 Taxi-v3 🚕中使用 Q-Learning 
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/thumbnail.jpg" alt="Unit 2 Thumbnail">
 
@@ -159,7 +159,7 @@ from tqdm.notebook import tqdm
 
 
 
-💡 一个好的习惯是在开始使用一个环境之前先查看其使用文档
+💡 开始使用环境时，查看其文档是个好习惯
 
 👉 https://www.gymlibrary.dev/environments/toy_text/frozen_lake/
 
@@ -241,8 +241,6 @@ print("Action Space Sample", env.action_space.sample())  # 采取一个随机动
 (👀 以下是Q-Learning算法的伪代码)
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit3/Q-learning-2.jpg" alt="Q-Learning" width="100%"/>
-
-It's time to initialize our Q-table! To know how many rows (states) and columns (actions) to use, we need to know the action and observation space. We already know their values from before, but we'll want to obtain them programmatically so that our algorithm generalizes for different environments. Gym provides us a way to do that: `env.action_space.n` and `env.observation_space.n`
 
 现在是初始化我们的Q表的时候了！为了知道要使用多少行（状态）和列（动作），我们需要了解动作和观测空间。虽然我们之前已经知道了动作和观测空间的数值，但是为了算法能够适用于不同的环境，我们在程序中以变量的形式对它们进行存储。Gym 为我们提供了一种方法：`env.action_space.n` 和 `env.observation_space.n`。
 
@@ -550,7 +548,7 @@ print(f"Mean_reward={mean_reward:.2f} +/- {std_reward:.2f}")
 
 在底层，Hub使用基于git的存储库（如果你不知道git是什么，不用担心），这意味着你可以在实验和改进你的智能体时，用新版本更新模型。
 
-#### 不要修改这段代码
+#### 请勿修改这段代码
 
 ```python
 from huggingface_hub import HfApi, snapshot_download
@@ -790,21 +788,21 @@ push_to_hub(repo_id=f"{username}/{repo_name}", model=model, env=env)
 
 FrozenLake-v1 无滑动版 是一个非常简单的环境，让我们尝试一个更难的环境🔥。
 
-# Part 2: Taxi-v3 🚖
+# 第二部分：Taxi-v3 环境🚖
 
-## Create and understand [Taxi-v3 🚕](https://www.gymlibrary.dev/environments/toy_text/taxi/)
+## 创建并理解 [Taxi-v3 环境🚕](https://www.gymlibrary.dev/environments/toy_text/taxi/)
 
----
+------
 
-💡 A good habit when you start to use an environment is to check its documentation
+💡 开始使用环境时，查看其文档是个好习惯
 
 👉 https://www.gymlibrary.dev/environments/toy_text/taxi/
 
 ---
 
-In `Taxi-v3` 🚕, there are four designated locations in the grid world indicated by R(ed), G(reen), Y(ellow), and B(lue).
+在`Taxi-v3`🚕中，网格环境中有四个指定位置，分别为R(ed)、G(reen)、Y(ellow)和B(lue)。
 
-When the episode starts, **the taxi starts off at a random square** and the passenger is at a random location. The taxi drives to the passenger’s location, **picks up the passenger**, drives to the passenger’s destination (another one of the four specified locations), and then **drops off the passenger**. Once the passenger is dropped off, the episode ends.
+当回合开始时，**出租车随机出现在一个方格中**，乘客位于一个随机位置。出租车驶向乘客所在位置，**接载乘客**，驶向乘客的目的地（另外四个指定位置中的一个），然后**放下乘客**。一旦乘客被放下，回合结束。
 
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/taxi.png" alt="Taxi">
@@ -815,6 +813,8 @@ env = gym.make("Taxi-v3")
 ```
 
 There are **500 discrete states since there are 25 taxi positions, 5 possible locations of the passenger** (including the case when the passenger is in the taxi), and **4 destination locations.**
+
+该环境有**500个离散状态，因为有25个出租车位置，5个可能的乘客位置**（包括乘客在出租车内的情况），以及**4个目的地位置。**
 
 
 ```python
@@ -827,41 +827,41 @@ action_space = env.action_space.n
 print("There are ", action_space, " possible actions")
 ```
 
-The action space (the set of possible actions the agent can take) is discrete with **6 actions available 🎮**:
+动作空间（智能体可以采取的可能动作集合）是离散的，有**6个可用动作🎮**：
 
-- 0: move south
-- 1: move north
-- 2: move east
-- 3: move west
-- 4: pickup passenger
-- 5: drop off passenger
+- 0：向南移动
+- 1：向北移动
+- 2：向东移动
+- 3：向西移动
+- 4：接载乘客
+- 5：放下乘客
 
-Reward function 💰:
+奖励函数💰：
 
-- -1 per step unless other reward is triggered.
-- +20 delivering passenger.
-- -10 executing “pickup” and “drop-off” actions illegally.
+- 每步-1，除非触发其他奖励。
+- 送达乘客+20。
+- 非法执行“接载”和“放下”动作-10。
 
 ```python
-# Create our Q table with state_size rows and action_size columns (500x6)
+# 创建具有state_size行和action_size列（500x6）的Q表
 Qtable_taxi = initialize_q_table(state_space, action_space)
 print(Qtable_taxi)
 print("Q-table shape: ", Qtable_taxi.shape)
 ```
 
-## Define the hyperparameters ⚙️
+## 定义超参数 ⚙️
 
-⚠ DO NOT MODIFY EVAL_SEED: the eval_seed array **allows us to evaluate your agent with the same taxi starting positions for every classmate**
+⚠ 请勿修改EVAL_SEED：eval_seed数组**允许我们使用相同的出租车起始位置评估每个同学的智能体**
 
 ```python
-# Training parameters
-n_training_episodes = 25000  # Total training episodes
-learning_rate = 0.7  # Learning rate
+# 训练超参数
+n_training_episodes = 25000  # 训练回合数
+learning_rate = 0.7  # 学习率
 
-# Evaluation parameters
-n_eval_episodes = 100  # Total number of test episodes
+# 评估参数
+n_eval_episodes = 100  # 评估回合数
 
-# DO NOT MODIFY EVAL_SEED
+# 请勿修改EVAL_SEED
 eval_seed = [
     16,
     54,
@@ -963,30 +963,30 @@ eval_seed = [
     11,
     28,
     148,
-]  # Evaluation seed, this ensures that all classmates agents are trained on the same taxi starting position
-# Each seed has a specific starting state
+]  # 评估种子，这确保了所有同学的智能体都在相同的出租车起始位置上进行训练
+# 每个种子都有一个特定的起始状态
 
-# Environment parameters
-env_id = "Taxi-v3"  # Name of the environment
-max_steps = 99  # Max steps per episode
-gamma = 0.95  # Discounting rate
+# 环境参数
+env_id = "Taxi-v3" # 环境名称
+max_steps = 99 # 每个回合的最大步数
+gamma = 0.95 # 折扣率
 
-# Exploration parameters
-max_epsilon = 1.0  # Exploration probability at start
-min_epsilon = 0.05  # Minimum exploration probability
-decay_rate = 0.005  # Exponential decay rate for exploration prob
+# 探索参数
+max_epsilon = 1.0 # 起始探索概率
+min_epsilon = 0.05 # 最小探索概率
+decay_rate = 0.005 # 探索概率的指数衰减率
 ```
 
-## Train our Q-Learning agent 🏃
+## 训练 Q-Learning 智能体 🏃
 
 ```python
 Qtable_taxi = train(n_training_episodes, min_epsilon, max_epsilon, decay_rate, env, max_steps, Qtable_taxi)
 Qtable_taxi
 ```
 
-## Create a model dictionary 💾 and publish our trained model to the Hub 🔥
+## 创建一个模型字典 💾 并将训练好的模型发布到Hub 🔥
 
-- We create a model dictionary that will contain all the training hyperparameters for reproducibility and the Q-Table.
+- 我们创建一个模型字典，其中将包含所有可复现的训练超参数和Q-Table。
 
 
 ```python
@@ -1006,34 +1006,39 @@ model = {
 ```
 
 ```python
-username = ""  # FILL THIS
+username = ""  # 填写你的用户名
 repo_name = ""
 push_to_hub(repo_id=f"{username}/{repo_name}", model=model, env=env)
 ```
 
-Now that's on the Hub, you can compare the results of your Taxi-v3 with your classmates using the leaderboard 🏆 👉 https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard
+现在已经发布到Hub上，你可以查看排行榜 🏆 👉 https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard 与同学们比较Taxi-v3的结果。
 
-⚠ To see your entry, you need to go to the bottom of the leaderboard page and **click on refresh** ⚠
+⚠ 若要查看你的排名，你需要在排行榜页面底部**点击刷新** ⚠
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/taxi-leaderboard.png" alt="Taxi Leaderboard">
 
-# Part 3: Load from Hub 🔽
+# 第三部分：从Hub加载模型 🔽
 
-What's amazing with Hugging Face Hub 🤗 is that you can easily load powerful models from the community.
+通过Hugging Face Hub 🤗你可以轻松地加载社区的强大模型。
 
-Loading a saved model from the Hub is really easy:
+从Hub加载保存的模型非常简单：
 
-1. You go https://huggingface.co/models?other=q-learning to see the list of all the q-learning saved models.
-2. You select one and copy its repo_id
+1. 前往 https://huggingface.co/models?other=q-learning 查看所有q-learning已保存模型的列表。
+2. 选择一个并复制其repo_id
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/notebooks/unit2/copy-id.png" alt="Copy id">
 
-3. Then we just need to use `load_from_hub` with:
+3. 然后我们只需使用 `load_from_hub`，参数为：
 
-- The repo_id
-- The filename: the saved model inside the repo.
+- repo_id
 
-#### Do not modify this code
+- filename：存储在repo中的已保存模型文件名。 从Hugging Face Hub下载模型。 
+
+  :param repo_id: 来自Hugging Face Hub的模型存储库的ID 
+
+  :param filename: 存储库中的模型zip文件的名称
+
+#### 请勿修改该部分代码
 
 ```python
 from urllib.error import HTTPError
@@ -1043,11 +1048,11 @@ from huggingface_hub import hf_hub_download
 
 def load_from_hub(repo_id: str, filename: str) -> str:
     """
-    Download a model from Hugging Face Hub.
-    :param repo_id: id of the model repository from the Hugging Face Hub
-    :param filename: name of the model zip file from the repository
+    从Hugging Face Hub下载模型
+    :param repo_id: 来自Hugging Face Hub的模型存储库的ID
+    :param filename: 存储库中的模型zip文件的名称
     """
-    # Get the model from the Hub, download and cache the model on your local disk
+    # 从Hub中获取模型，下载并将模型缓存到本地磁盘中
     pickle_model = hf_hub_download(repo_id=repo_id, filename=filename)
 
     with open(pickle_model, "rb") as f:
@@ -1059,7 +1064,7 @@ def load_from_hub(repo_id: str, filename: str) -> str:
 ### .
 
 ```python
-model = load_from_hub(repo_id="ThomasSimonini/q-Taxi-v3", filename="q-learning.pkl")  # Try to use another model
+model = load_from_hub(repo_id="ThomasSimonini/q-Taxi-v3", filename="q-learning.pkl")  # 尝试使用另一个模型
 
 print(model)
 env = gym.make(model["env_id"])
@@ -1070,46 +1075,45 @@ evaluate_agent(env, model["max_steps"], model["n_eval_episodes"], model["qtable"
 ```python
 model = load_from_hub(
     repo_id="ThomasSimonini/q-FrozenLake-v1-no-slippery", filename="q-learning.pkl"
-)  # Try to use another model
+)  # 尝试使用另一个模型
 
 env = gym.make(model["env_id"], is_slippery=False)
 
 evaluate_agent(env, model["max_steps"], model["n_eval_episodes"], model["qtable"], model["eval_seed"])
 ```
 
-## Some additional challenges 🏆
+## 额外挑战 🏆
 
-The best way to learn **is to try things by your own**! As you saw, the current agent is not doing great. As a first suggestion, you can train for more steps. With 1,000,000 steps, we saw some great results!
+最好的学习方法就是**自己去尝试**！目前的智能体表现并不理想，你可以尝试让它训练更多步。我们发现，在1,000,000步的训练中，智能体能取得很好的成果！
 
-In the [Leaderboard](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard) you will find your agents. Can you get to the top?
+在[排行榜](https://huggingface.co/spaces/huggingface-projects/Deep-Reinforcement-Learning-Leaderboard)上，你可以看到你的智能体排名，你能登上榜首吗？
 
-Here are some ideas to achieve so:
+以下是一些建议：
 
-* Train more steps
-* Try different hyperparameters by looking at what your classmates have done.
-* **Push your new trained model** on the Hub 🔥
+- 训练更多步骤
+- 观察其他同学的模型，尝试不同的超参数
+- 在Hub上**发布你新训练的模型** 🔥
 
-Are walking on ice and driving taxis too boring to you? Try to **change the environment**, why not using FrozenLake-v1 slippery version? Check how they work [using the gym documentation](https://www.gymlibrary.dev/) and have fun 🎉.
+如果觉得在冰面上行走和驾驶出租车太无聊了，可以尝试**更换环境**，如使用FrozenLake-v1滑动版，通过查阅[gym文档](https://www.gymlibrary.dev/)了解它们是如何使用的，并享受其带来的效果吧🎉。
 
 _____________________________________________________________________
 
-Congrats 🥳, you've just implemented, trained, and uploaded your first Reinforcement Learning agent.
+恭喜🥳，你刚刚实现、训练并上传了你的第一个强化学习智能体。
 
-Understanding Q-Learning is an **important step to understanding value-based methods.**
+理解Q-Learning对于领会基于价值的方法非常重要。
 
-In the next Unit with Deep Q-Learning, we'll see that creating and updating a Q-table was a good strategy — **however, this is not scalable.**
+在接下来的单元中，我们将学习深度Q学习。我们会发现，创建和更新Q表的确是个好策略，**但这种方法并不具备扩展性**。
 
-For instance, imagine you create an agent that learns to play Doom.
+例如，假设你创建了一个能玩《毁灭战士》的智能体。
 
 <img src="https://vizdoom.cs.put.edu.pl/user/pages/01.tutorial/basic.png" alt="Doom"/>
 
-Doom is a large environment with a huge state space (millions of different states). Creating and updating a Q-table for that environment would not be efficient.
+毁灭战士是一个庞大的环境，拥有大量的状态空间（数百万个不同状态）。为这样的环境创建和更新Q表并不高效。
 
-That's why we'll study, in the next unit, Deep Q-Learning, an algorithm **where we use a neural network that approximates, given a state, the different Q-values for each action.**
+正因如此，我们将在下一单元学习深度Q学习。这是一种算法，**它利用神经网络在给定状态时近似计算每个动作的不同Q值**。
 
 <img src="https://huggingface.co/datasets/huggingface-deep-rl-course/course-images/resolve/main/en/unit4/atari-envs.gif" alt="Environments"/>
 
+期待在第三单元与你相见！🔥
 
-See you on Unit 3! 🔥
-
-## Keep learning, stay awesome 🤗
+## 继续学习，保持卓越 🤗
